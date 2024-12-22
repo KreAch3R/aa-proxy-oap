@@ -9,8 +9,6 @@ ExecStartPre=-!/bin/sh -c '/bin/rm -r /home/pi/Logs/aa-usbgadget.*'
 ExecStart=/usr/local/bin/aa-proxy/aa-usbgadget.sh start
 ExecStop=/usr/local/bin/aa-proxy/aa-usbgadget.sh stop
 ExecReload=/usr/local/bin/aa-proxy/aa-usbgadget.sh restart
-#Restart=on-failure
-#RestartSec=5
 StandardOutput=file:/home/pi/Logs/aa-usbgadget.log
 StandardError=file:/home/pi/Logs/aa-usbgadget.error
 
