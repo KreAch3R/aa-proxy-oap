@@ -1,0 +1,21 @@
+[Unit]
+Description=OAA AA Wireless Proxy Service
+After=network-online.target
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+User=root
+Group=root
+ExecStartPre=-!/bin/sh -c '/bin/rm -r /home/pi/Logs/aa-proxy-rs.*'
+ExecStart=/usr/local/bin/aa-proxy/aa-proxy-rs.sh start
+ExecStop=/usr/local/bin/aa-proxy/aa-proxy-rs.sh stop
+ExecReload=/usr/local/bin/aa-proxy/aa-proxy-rs.sh restart
+#Restart=on-failure
+#RestartSec=5
+# also on /var/log/aa-proxy-rs.log
+StandardOutput=file:/home/pi/Logs/aa-proxy-rs.log
+StandardError=file:/home/pi/Logs/aa-proxy-rs.error
+
+[Install]
+WantedBy=multi-user.target

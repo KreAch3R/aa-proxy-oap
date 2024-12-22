@@ -1,0 +1,16 @@
+# /etc/modules: kernel modules to load at boot time.
+#
+# This file contains the names of kernel modules that should be loaded
+# at boot time, one per line. Lines beginning with "#" are ignored.
+
+i2c-dev
+
+#rtc-pcf8523
+
+configfs
+usbcore
+usb_common
+udc_core
+libcomposite
+dummy_hcd
+#dwc2
