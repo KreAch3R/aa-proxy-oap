@@ -1,11 +1,11 @@
 # aa-proxy-oap
 An "aa-proxy-rs", (a Rust implementation of AA Wireless Dongle) USB Gadget Integration for OpenAuto Pro.
 
-This is a WORK IN PROGRESS.
+**This is a WORK IN PROGRESS.**
 
-This took weeks and needed configurations across the whole Host/Headunit raspbian buster image, so I will try to document everything. I will come back and add/fix things for a while. Please hold on. 
+This took weeks and needed configurations across the whole Host/Headunit raspbian buster image, so I will try to document everything. I will come back and add/fix things for a while. 
 
-Some terminology:
+Some **Terms** used:
 ```
 Host/Headunit:              RPI 4B running OpenAuto-Pro
 Device/USB Gadget:          RPI 4B running an emulated OTG/USB Gadget device and using dummy_hcd to become a device to itself
@@ -16,34 +16,34 @@ aawg/aa-proxy-rs:           The program providing the wired to wireless AA proxy
 
 ### History
 
-Starting on September 2023, with Android Auto update 12.7+, wireless AA stopped working on OpenAuto-Pro, and produced a black screen. At the same time, the same bug presented on Crankshaft, the opensource original source base that OpenAuto-Pro was based upon, but which never had working wireless AA.
+Starting on September 2023, with Android Auto update 12.7+, wireless AA stopped working on OpenAuto-Pro, and produced a black screen. At the same time, the same bug presented on Crankshaft, the original opensource  project that OpenAuto-Pro was based upon, but which never had working wireless AA.
 
-OpenAuto-Pro went out of business, while OpenAuto-Pro and Crankshaft users started debugging for the problem. Many found out that using aftermarket AA wireless dongles, everything worked correctly.
+OpenAuto-Pro went out of business, while OpenAuto-Pro and Crankshaft users started debugging the problem. Many found out that by using aftermarket AA wireless dongles, everything worked correctly.
 
-That sent me into a research about opensource AA wireless dongles, and I found the awesome project of https://github.com/nisargjhaveri/WirelessAndroidAutoDongle. After I tested it using a RPI-zero2w, I wanted to bypass the step of using two separate PIs inside my car and went looking for ways of emulating the second pi.
+That sent me into a research about opensource AA wireless dongles, and I found the awesome project of [nisargjhaveri/WirelessAndroidAutoDongle](https://github.com/nisargjhaveri/WirelessAndroidAutoDongle). After I tested it successfully using a RPI-zero2w, I wanted to bypass the step of using two separate PIs and started looking for ways of emulating the second pi.
 
 ### Feasibility
 
 I came around the awesome blog of Andrzej Pietrasiewicz:
 https://www.collabora.com/news-and-blog/blog/2019/06/24/using-dummy-hcd/
 
-There, he explains that using a kernel module named `dummy_hcd` we can emulate a USB UDC controller, that means, a controller that *accepts connections from itself as if a USB-GADGET DEVICE is connected to it*.
+There, he explains that using a kernel module named `dummy_hcd` we can emulate a USB UDC controller, so we can create a controller that *accepts connections from itself as if a USB-GADGET DEVICE is connected to it*.
 
-So that left us with incorporating the configurations of the `WirelessAndroidAutoDongle` image inside our own Raspbian Buster 32bit version of our RPI 4B pi, which proved to be a big task on its own.
+The next step was incorporating the configurations of the `WirelessAndroidAutoDongle` image inside our own Raspbian Buster 32bit version of our RPI 4B pi, which proved to be a big task on its own.
 
 That was because, the OpenAuto-Pro raspbian buster image is based on the 5.10.y rpi kernel (specifically, 5.10.103), while the `AAWirelessDongle` images are built using `buildroot` and are based on far newer kernels. 
 
 That means that the `aawg` binary wasn't able to be installed as-is, because it required far newer *"runtime libraries"* like `libc`. As far as I searched, I couldn't find any way to build `aawg` statically.
 
-Then another awesome project based on `WirelessAndroidAutoDongle` came to the rescue, https://github.com/manio/aa-proxy-rs. This one can be built completely statically!
+Then, another awesome project based on `WirelessAndroidAutoDongle` came to the rescue, [manio/aa-proxy-rs](https://github.com/manio/aa-proxy-rs). This one can be built completely statically!
 
 ### Proof of concept
 
 So, to sum up, we need to:
 
 1. Re-build the kernel for our OpenAuto-Pro image, include all the necessary modifications for `usb-gadget` and `dummy_hcd` to work, and install it. 
-2. Build `aa-proxy-rs` statically
-3. Install the `Bluetooth`, `hostapd`, `dnsmasq` and whole other changes to our **Host** system.
+2. Build `aa-proxy-rs` statically or use the pre-built binary of this repo.
+3. Install the `Bluetooth`, `hostapd`, `dnsmasq` and all the other changes to our **Host** system.
 
 
 
@@ -61,7 +61,7 @@ Instructions: [kernel/modules/raw-gadget/dummy_hcd/README.md](https://github.com
 
 * Add the necessary modules to start at boot.  
 * Equivalent to `sudo modprobe MODULE` after boot.  
-* This correlates with the running kernel configs. Configs marked as `=m` NEED to be included here. 
+* This correlates with the running kernel configs. Configs marked as `=m` **NEED** to be included here. 
 
 ### D. Build and install `uMTP-Responder`
 
@@ -136,3 +136,11 @@ Log (from `/var/log/aa-proxy-rs.log`):
 2024-12-28, 00:47:22.461 [WARN]  bluetooth:  🎧 Error waiting for HSP profile task: deadline has elapsed
 2024-12-28, 00:47:22.461 [INFO]  bluetooth:  💤 Bluetooth adapter stays on
 ```
+
+ <img src="images/aa-wireless-connected.jpg" alt="AA Wireless Connected" width="600">
+
+ <img src="images/openauto-pro-16.jpg" alt="OpenAuto-Pro 16" width="500">
+
+<img src="images/aa-wireless-running.jpg" alt="AA app wireless" width="302">
+<img src="images/aa-version-13.jpg" alt="AA app version" width="250">
+
