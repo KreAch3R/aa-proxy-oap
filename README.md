@@ -1,9 +1,9 @@
 # aa-proxy-oap
-An "aa-proxy-rs", (a Rust implementation of AA Wireless Dongle) USB Gadget Integration for OpenAuto Pro
+An "aa-proxy-rs", (a Rust implementation of AA Wireless Dongle) USB Gadget Integration for OpenAuto Pro.
 
 This is a WORK IN PROGRESS.
 
-This took weeks and needed configurations across the whole Host/Headunit raspbian buster image, so I will try to document everything. I will come back and add/fix things for a while. Bear with me. 
+This took weeks and needed configurations across the whole Host/Headunit raspbian buster image, so I will try to document everything. I will come back and add/fix things for a while. Please hold on. 
 
 Some terminology:
 ```
@@ -20,26 +20,26 @@ Starting on September 2023, with Android Auto update 12.7+, wireless AA stopped 
 
 OpenAuto-Pro went out of business, while OpenAuto-Pro and Crankshaft users started debugging for the problem. Many found out that using aftermarket AA wireless dongles, everything worked correctly.
 
-The sent me into a research about opensource AA wireless dongles, and I came about the awesome project of https://github.com/nisargjhaveri/WirelessAndroidAutoDongle. After I tested it using a RPI-zero2w, I wanted to bypass the step of using two separate pi's inside my car and went looking for ways of emulating the second pi.
+That sent me into a research about opensource AA wireless dongles, and I found the awesome project of https://github.com/nisargjhaveri/WirelessAndroidAutoDongle. After I tested it using a RPI-zero2w, I wanted to bypass the step of using two separate PIs inside my car and went looking for ways of emulating the second pi.
 
 ### Feasibility
 
 I came around the awesome blog of Andrzej Pietrasiewicz:
 https://www.collabora.com/news-and-blog/blog/2019/06/24/using-dummy-hcd/
 
-There, he explains that using a kernel module named `dummy_hcd` we can emulate a USB UDC controller, that means, a controller that *accepts connections from itself as if a USB-GADGET DEVICE connected to it*.
+There, he explains that using a kernel module named `dummy_hcd` we can emulate a USB UDC controller, that means, a controller that *accepts connections from itself as if a USB-GADGET DEVICE is connected to it*.
 
-So that left us with incorporating the configurations inside the `WirelessAndroidAutoDongle` image inside our own Raspbian Buster 32bit version of our RPI 4B pi, which proved to be a big task on its own.
+So that left us with incorporating the configurations of the `WirelessAndroidAutoDongle` image inside our own Raspbian Buster 32bit version of our RPI 4B pi, which proved to be a big task on its own.
 
 That was because, the OpenAuto-Pro raspbian buster image is based on the 5.10.y rpi kernel (specifically, 5.10.103), while the `AAWirelessDongle` images are built using `buildroot` and are based on far newer kernels. 
 
-That means that the `aawg` binary wasn't able to be installed as-is, because it required far newer "runtime libraries" like `libc`. As far as I searched, I couldn't find any way to build `aawg` statically.
+That means that the `aawg` binary wasn't able to be installed as-is, because it required far newer *"runtime libraries"* like `libc`. As far as I searched, I couldn't find any way to build `aawg` statically.
 
 Then another awesome project based on `WirelessAndroidAutoDongle` came to the rescue, https://github.com/manio/aa-proxy-rs. This one can be built completely statically!
 
 ### Proof of concept
 
-So, to sum up, we need:
+So, to sum up, we need to:
 
 1. Re-build the kernel for our OpenAuto-Pro image, include all the necessary modifications for `usb-gadget` and `dummy_hcd` to work, and install it. 
 2. Build `aa-proxy-rs` statically
@@ -49,45 +49,45 @@ So, to sum up, we need:
 
 # 2. Low level How-To
 
-## Build and install the kernel
+### A. Build and install the kernel
 
-Instructions are to be included inside [kernel/README.md](https://github.com/KreAch3R/aa-proxy-oap/blob/main/kernel/README.md).
+Instructions: [kernel/README.md](https://github.com/KreAch3R/aa-proxy-oap/blob/main/kernel/README.md).
 
-## Build and install `dummy_hcd`
+### B. Build and install `dummy_hcd`
 
-Instructions are to be included inside [kernel/modules/raw-gadget/dummy_hcd/README.md](https://github.com/KreAch3R/aa-proxy-oap/blob/main/kernel/modules/raw-gadget/dummy_hcd/README.md).
+Instructions: [kernel/modules/raw-gadget/dummy_hcd/README.md](https://github.com/KreAch3R/aa-proxy-oap/blob/main/kernel/modules/raw-gadget/dummy_hcd/README.md).
 
-## Modify `/etc/modules`
+### C. Modify `/etc/modules`
 
-Add the necessary modules to start at boot.  
-Equivalent to `sudo modprobe MODULE` after boot.  
-This correlates with the running kernel configs. Configs marked as `=m` NEED to be included here. 
+* Add the necessary modules to start at boot.  
+* Equivalent to `sudo modprobe MODULE` after boot.  
+* This correlates with the running kernel configs. Configs marked as `=m` NEED to be included here. 
 
-## Build and install `uMTP-Responder`
+### D. Build and install `uMTP-Responder`
 
-This is needed for the `usb-gadget` service to work.  
-Instructions are to be included inside [uMTP-Responder/README.md](https://github.com/KreAch3R/aa-proxy-oap/blob/main/uMTP-Responder/README.md).
+* This is needed for the `usb-gadget` service to work.  
+* Instructions: [uMTP-Responder/README.md](https://github.com/KreAch3R/aa-proxy-oap/blob/main/uMTP-Responder/README.md).
 
-## Install all files inside `aa-proxy-oap`
+### E. Install all files inside `aa-proxy-oap`
 
-The file structure of the `aa-proxy-oap` subfolder is following the structure of another project of mine, https://github.com/KreAch3R/navipi-usb-update.  
-Basically, it's a copy-paste mechanism so the folders correspond to the **Host** system root folders and subfolders, generally. 
+* The file structure of the `aa-proxy-oap` subfolder is following the structure of another project of mine, [navipi-usb-update](https://github.com/KreAch3R/navipi-usb-update).  
+Basically, it's a copy-paste mechanism so the folders correspond to the **Host** system root folders and subfolders. It's not necessary to use this mechanism to install the files. 
 
-### Bluetooth
+#### a. Bluetooth
 
-`aa-proxy-rs` is handling the Bluetooth connection, check its source code for how it's done. The `main.conf` file is needed.
+* `aa-proxy-rs` is handling the Bluetooth connection. 
+* The `main.conf` file is needed.
 
-### Wi-Fi Hotspot / hostapd / dhcpcd / dnsmasq
+#### b. Wi-Fi Hotspot / hostapd / dhcpcd / dnsmasq
 
-AA wireless requires a working Wi-Fi Hotspot setup by the **Host** system, and then `aa-proxy-rs` conveys the `ssid` and `password` to the phone through the established Bluetooth connection. 
+* AA wireless requires a working Wi-Fi Hotspot setup by the **Host** system, and then `aa-proxy-rs` conveys the `ssid` and `password` to the phone through the established Bluetooth connection. 
+* `hostapd` and `dhcpcd` modifications are required for this. In constract to `WirelessAndroidAutoDongle` modifications, we need to use `dhcpcd`. 
+* Important: `OpenAuto-Pro` provides a `hotspot` toggle that modifies the same files. Make sure to enable it first, then edit the files. That makes sure that there aren't any conficts. 
 
-`hostapd` and `dhcpcd` modifications are required for this. In constract to `WirelessAndroidAutoDongle` modifications, we need to use `dhcpcd`. 
+#### c. Systemd
 
-Important: `OpenAuto-Pro` provides a `hotspot` toggle that modifies the same files. Make sure to enable it first, then edit the files. That makes sure that there aren't any conficts. 
-
-### Systemd
-
-In constract to `WirelessAndroidAutoDongle` modifications, we can't use `/etc/init.d`. At least, I didn't find out how. I translated the necessary startup scripts to `systemd` services, so that the `usb-gadget` can be setup after boot and `aa-proxy-rs` can be run, on our **Host** raspbian buster image. 
+* In constract to `WirelessAndroidAutoDongle` modifications, we can't use `/etc/init.d`. At least, I didn't find out how. 
+* I translated the necessary startup scripts to `systemd` services, so that the `usb-gadget` can be setup after boot and `aa-proxy-rs` can be run.
 
 
 # 3. Result:

@@ -42,7 +42,7 @@ CONFIG_USB_CONFIGFS_UEVENT=y
 CONFIG_USB_CONFIGFS_F_ACC=y
 ```
 
-with two patches for 5.10y raspberry pi 32bit armhf kernel:  
+The two patches included in the repo are for 5.10y raspberry pi 32bit armhf kernel:  
 ```
 0001-Backport-and-apply-patches-for-Android-Accessory-mod.patch
 0002-Remove-cyclic-dependency-between-f_accessory-and-lib.patch
@@ -50,7 +50,7 @@ with two patches for 5.10y raspberry pi 32bit armhf kernel:
 
 These patches should be able to be cherry-picked on top of the `rpi-5.10.y` kernel source.
 
-Given that you haven't modified your kernel, at least two of the above **required** configs won't be enabled. So, ***we need to build the kernel.*** 
+Given that you haven't modified your kernel, at least two of the above **required** configs won't be enabled. So, ***we need to build the kernel and add them in.*** 
 
 ## 2. Build the kernel 
 
@@ -69,6 +69,17 @@ make bcm2711_defconfig
 #change the following line in .config:
 CONFIG_LOCALVERSION="-v7l-MY_CUSTOM_KERNEL"
 
+```
+
+Now we edit the `.config` file and add our modifications. At least:
+```
+CONFIG_USB_CONFIGFS_UEVENT=y
+CONFIG_USB_CONFIGFS_F_ACC=y
+```
+
+and whatever else is missing. Then we continue with the building:
+
+```
 # Run the following command to build a 32-bit kernel:
 make -j6 zImage modules dtbs
 
