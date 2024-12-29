@@ -77,18 +77,24 @@ Basically, it's a copy-paste mechanism so the folders correspond to the **Host**
 
 * `aa-proxy-rs` is handling the Bluetooth connection. 
 * The `main.conf` file is needed.
+* You can edit the BLE device name [here](https://github.com/KreAch3R/aa-proxy-oap/blob/6bf6b8f2b33cf9f97e480fea18d424b288a35f68/aa-proxy-oap/usr/local/bin/aa-proxy/aa-proxy-rs.sh#L11).
 
 #### b. Wi-Fi Hotspot / hostapd / dhcpcd / dnsmasq
 
 * AA wireless requires a working Wi-Fi Hotspot setup by the **Host** system, and then `aa-proxy-rs` conveys the `ssid` and `password` to the phone through the established Bluetooth connection. 
 * `hostapd` and `dhcpcd` modifications are required for this. In constract to `WirelessAndroidAutoDongle` modifications, we need to use `dhcpcd`. 
 * Important: `OpenAuto-Pro` provides a `hotspot` toggle that modifies the same files. Make sure to enable it first, then edit the files. That makes sure that there aren't any conficts. 
+* You can edit the `ssid` and `password` of the hotspot [here](https://github.com/KreAch3R/aa-proxy-oap/blob/6bf6b8f2b33cf9f97e480fea18d424b288a35f68/aa-proxy-oap/etc/hostapd/hostapd.conf#L16), while the IP address [here](https://github.com/KreAch3R/aa-proxy-oap/blob/6bf6b8f2b33cf9f97e480fea18d424b288a35f68/aa-proxy-oap/etc/dhcpcd.conf#L62) and range [here](https://github.com/KreAch3R/aa-proxy-oap/blob/6bf6b8f2b33cf9f97e480fea18d424b288a35f68/aa-proxy-oap/etc/dnsmasq.conf#L2).
 
 #### c. Systemd
 
 * In constract to `WirelessAndroidAutoDongle` modifications, we can't use `/etc/init.d`. At least, I didn't find out how. 
 * I translated the necessary startup scripts to `systemd` services, so that the `usb-gadget` can be setup after boot and `aa-proxy-rs` can be run.
 
+#### d. Install `aa-proxy-rs` folder inside `/usr/local/bin`
+
+* It contains the script used by `systemd` as well as a statically built `aa-proxy-rs` working binary. 
+* If you want to build it on your own, check [here](https://github.com/KreAch3R/aa-proxy-rs?tab=readme-ov-file#dependencies).
 
 # 3. Result:
 
