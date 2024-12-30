@@ -12,6 +12,10 @@ Device/USB Gadget:          RPI 4B running an emulated OTG/USB Gadget device and
 aawg/aa-proxy-rs:           The program providing the wired to wireless AA proxy
 ```
 
+<a href="https://www.paypal.com/donate/?business=R9V8AAFPNV684&no_recurring=0&currency_code=EUR">
+<img src="https://raw.githubusercontent.com/stefan-niedermann/paypal-donate-button/master/paypal-donate-button.png" alt="Donate with PayPal" width="300">
+</a>
+
 # 1. High level explanation
 
 ### History
