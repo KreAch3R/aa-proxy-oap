@@ -42,14 +42,6 @@ CONFIG_USB_CONFIGFS_UEVENT=y
 CONFIG_USB_CONFIGFS_F_ACC=y
 ```
 
-The two patches included in the repo are for 5.10y raspberry pi 32bit armhf kernel:  
-```
-0001-Backport-and-apply-patches-for-Android-Accessory-mod.patch
-0002-Remove-cyclic-dependency-between-f_accessory-and-lib.patch
-```
-
-These patches should be able to be cherry-picked on top of the `rpi-5.10.y` kernel source.
-
 Given that you haven't modified your kernel, at least two of the above **required** configs won't be enabled. So, ***we need to build the kernel and add them in.*** 
 
 ## 2. Build the kernel 
@@ -60,15 +52,26 @@ These **must** be done on target, i.e. on the **Host** system, RPI-4B, in order 
 
 ```
 sudo apt install bc bison flex libssl-dev make
-git clone --branch 5.10.y https://github.com/raspberrypi/linux
+git clone --branch rpi-5.10.y https://github.com/raspberrypi/linux
+```
+Then, you need to apply the necessary patches for the `accessory` function. The two patches included in the repo are for 5.10y raspberry pi 32bit armhf kernel:  
 
+
+These patches should be able to be applied on top of the `rpi-5.10.y` kernel source, by running:
+```
+git am < 0001-Backport-and-apply-patches-for-Android-Accessory-mod.patch
+git am < 0002-Remove-cyclic-dependency-between-f_accessory-and-lib.patch
+```
+
+After applying, continue with building:
+
+```
 cd linux
 KERNEL=kernel7l
 make bcm2711_defconfig
 
 #change the following line in .config:
 CONFIG_LOCALVERSION="-v7l-MY_CUSTOM_KERNEL"
-
 ```
 
 Now we edit the `.config` file and add our modifications. At least:
@@ -77,7 +80,7 @@ CONFIG_USB_CONFIGFS_UEVENT=y
 CONFIG_USB_CONFIGFS_F_ACC=y
 ```
 
-and whatever else is missing. Then we continue with the building:
+and whatever else is missing. Then: 
 
 ```
 # Run the following command to build a 32-bit kernel:
