@@ -69,16 +69,18 @@ After applying, continue with building:
 cd linux
 KERNEL=kernel7l
 make bcm2711_defconfig
-
-#change the following line in .config:
-CONFIG_LOCALVERSION="-v7l-MY_CUSTOM_KERNEL"
 ```
 
 Now we edit the `.config` file and add our modifications. At least:
 ```
+# replace lines as necessary or add to the end
 CONFIG_USB_CONFIGFS_UEVENT=y
 CONFIG_USB_CONFIGFS_F_ACC=y
+
+#change the following line in .config:
+CONFIG_LOCALVERSION="-v7l-MY_CUSTOM_KERNEL"
 ```
+Don't leave duplicate lines about the same config. 
 
 and whatever else is missing. Then: 
 
