@@ -15,3 +15,22 @@ You can build your own or use my pre-built one from `aa-proxy-oap/lib/modules/UN
 ```
 sudo cp dummy_hcd.ko /lib/modules/$(uname -r)/kernel/drivers/
 ```
+
+Then update the module list:
+```
+sudo depmod
+```
+
+After reboot, you can check if the module is loaded correctly with: 
+```
+pi@raspberrypi:~ $ lsmod | grep dummy
+dummy_hcd              32768  0
+```
+
+**OR**
+
+```
+pi@raspberrypi:~ $ ls -l /sys/class/udc
+total 0
+lrwxrwxrwx 1 root root 0 Feb 14  2019 dummy_udc.0 -> ../../devices/platform/dummy_udc.0/udc/dummy_udc.0
+```

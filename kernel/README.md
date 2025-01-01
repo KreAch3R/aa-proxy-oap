@@ -124,5 +124,3 @@ CONFIG_CONFIGFS_FS=y
 Notice that `CONFIG_USB_DUMMY_HCD` doesn't exist. It is because it is installed manually at `/lib/modules/$(uname -r)/kernel/drivers/` as [per instructions](https://github.com/KreAch3R/aa-proxy-oap/blob/16f4c7f9a2fe108d42cd9adb5f29aae58695281d/kernel/modules/README.md) after booting into the new freshly compiled kernel. 
 
 For the above output, I should only need to load `libcomposite` and `dummy_hcd` in `/etc/modules`.
-
-After installing the new kernel and setting up the modules, check if `dummy_udc.0` is running with `ls -l /sys/class/udc`.
