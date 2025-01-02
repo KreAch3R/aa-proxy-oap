@@ -26,7 +26,7 @@ cat running.config | grep -e CONFIG_CONFIGFS_FS= \
                          -e CONFIG_USB_CONFIGFS_F_ACC=
 ```
 
-### B. Necessary kernel config for USB-GADGET to work (either y or *m and load in /etc/modules*)
+### B. Necessary kernel config for USB-GADGET and DUMMY_HCD to work
 
 ```
 CONFIG_CONFIGFS_FS=y               # ConfigFS support
@@ -57,13 +57,10 @@ These **must** be done on target, i.e. on the **Host** system, RPI-4B, in order 
 sudo apt install bc bison flex libssl-dev make
 git clone --branch rpi-5.10.y https://github.com/raspberrypi/linux
 ```
-Then, you need to apply the necessary patches for the `accessory` function. The two patches included in the repo are for 5.10y raspberry pi 32bit armhf kernel:  
-
-
-These patches should be able to be applied on top of the `rpi-5.10.y` kernel source, by running:
+Then, you need to apply the necessary patch for the `accessory` function. In constrast to `AAWirelessDongle`, we don't need the `0002-Remove-cyclic-dependency-between-f_accessory-and-lib.patch`.  
+The patch should be able to be applied on top of the `rpi-5.10.y` kernel source, by running:
 ```
 git am < 0001-Backport-and-apply-patches-for-Android-Accessory-mod.patch
-git am < 0002-Remove-cyclic-dependency-between-f_accessory-and-lib.patch
 ```
 
 After applying, continue with building:
@@ -76,16 +73,21 @@ make bcm2711_defconfig
 
 Now we edit the `.config` file and add our modifications. At least:
 ```
-# replace lines as necessary or add to the end
+# change the following line in .config:
+CONFIG_LOCALVERSION="-v7l-MY_CUSTOM_KERNEL"
+
+# replace lines as necessary (search the file, remove "is not set")
+CONFIG_USB_DUMMY_HCD=y
+CONFIG_USB_LIBCOMPOSITE=y
+CONFIG_USB_CONFIGFS=y
 CONFIG_USB_CONFIGFS_UEVENT=y
 CONFIG_USB_CONFIGFS_F_ACC=y
-
-#change the following line in .config:
-CONFIG_LOCALVERSION="-v7l-MY_CUSTOM_KERNEL"
 ```
-Don't leave duplicate lines about the same config. 
+Don't leave duplicate lines about the same config.
 
-Then: 
+You can also use the pre-created [bcm2711_defconfig](kernel/defconfig/bcm2711_defconfig).
+
+Then:
 
 ```
 # Run the following command to build a 32-bit kernel:
@@ -94,7 +96,7 @@ make -j6 zImage modules dtbs
 # install modules
 sudo make -j6 modules_install
 
-# For the commands below, the original guide wrongly uses the updated new/64bit paths for older 32bit kernels. Use the paths below:
+# For the commands below, the original guide wrongly uses the updated new/64bit paths for older 32bit kernels. Instead, use:
 # Install kernel 
 sudo cp /boot/$KERNEL.img /boot/$KERNEL-backup.img
 sudo cp arch/arm/boot/zImage /boot/$KERNEL.img
@@ -117,13 +119,20 @@ If everything went as planned, remove `running.config` and **recreate** it again
 ```
 CONFIG_USB=y
 CONFIG_USB_GADGET=y
-CONFIG_USB_CONFIGFS=m
+CONFIG_USB_DUMMY_HCD=y
+CONFIG_USB_CONFIGFS=y
 CONFIG_USB_CONFIGFS_UEVENT=y
 CONFIG_USB_CONFIGFS_F_FS=y
 CONFIG_USB_CONFIGFS_F_ACC=y
 CONFIG_CONFIGFS_FS=y
 ```
 
-Notice that `CONFIG_USB_DUMMY_HCD` doesn't exist. It is because it is installed manually at `/lib/modules/$(uname -r)/kernel/drivers/` as [per instructions](modules/raw-gadget/dummy_hcd/README.md) after booting into the new freshly compiled kernel. 
+Because we compile `libcomposite`, `usb_configfs` and `dummy_hcd` directly into the kernel, we don't need to modify `/etc/modules`.
 
-For the above output, we should only need to load `libcomposite` and `dummy_hcd` in `/etc/modules`.
+After reboot, you can check if the `dummy_udc` controller is running by:
+
+```
+pi@raspberrypi:~ $ ls -l /sys/class/udc
+total 0
+lrwxrwxrwx 1 root root 0 Feb 14  2019 dummy_udc.0 -> ../../devices/platform/dummy_udc.0/udc/dummy_udc.0
+```

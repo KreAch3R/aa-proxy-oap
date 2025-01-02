@@ -16,7 +16,7 @@ aawg/aa-proxy-rs:           The program providing the wired to wireless AA proxy
 <img src="https://raw.githubusercontent.com/stefan-niedermann/paypal-donate-button/master/paypal-donate-button.png" alt="Donate with PayPal" width="300">
 </a>
 
-# 1. High level explanation
+# High level explanation
 
 ### History
 
@@ -46,35 +46,25 @@ Then, another awesome project based on `WirelessAndroidAutoDongle` came to the r
 So, to sum up, we need to:
 
 1. Re-build the kernel for our OpenAuto-Pro image, include all the necessary modifications for `usb-gadget` and `dummy_hcd` to work.
-2. Build `dummy_hcd.ko` or use the pre-built binary
-3. Build `uMTP-Responder` or use the pre-built binary
-4. Build `aa-proxy-rs` statically or use the pre-built binary
-5. Install the `kernel`, `dummy_hcd` module, `uMTP-Responder` and the `bluetooth`, `hostapd`, `dhcpcd`, `dnsmasq` to our **Host** system, alongside the `aa-proxy` folder in `/usr/local/bin` and `systemd` services.
+2. Build `uMTP-Responder` or use the pre-built binary
+3. Build `aa-proxy-rs` statically or use the pre-built binary
+4. Install the `kernel`, `uMTP-Responder` and the `bluetooth`, `hostapd`, `dhcpcd`, `dnsmasq` to our **Host** system, alongside the `aa-proxy` folder in `/usr/local/bin` and `systemd` services.
 
 
 
-# 2. Low level How-To
+# Low level How-To
 
-### A. Build and install the kernel
+## Build and install the kernel
 
 Instructions: [kernel/README.md](https://github.com/KreAch3R/aa-proxy-oap/blob/main/kernel/README.md).
 
-### B. Build and install `dummy_hcd`
 
-Instructions: [kernel/modules/raw-gadget/dummy_hcd/README.md](https://github.com/KreAch3R/aa-proxy-oap/blob/main/kernel/modules/raw-gadget/dummy_hcd/README.md).
-
-### C. Modify `/etc/modules`
-
-* Add the necessary modules to start at boot.  
-* Equivalent to `sudo modprobe MODULE` after boot.  
-* This correlates with the running kernel configs. Configs marked as `=m` **NEED** to be included here. 
-
-### D. Build and install `uMTP-Responder`
+## Build and install `uMTP-Responder`
 
 * This is needed for the `usb-gadget` service to work.  
 * Instructions: [uMTP-Responder/README.md](https://github.com/KreAch3R/aa-proxy-oap/blob/main/uMTP-Responder/README.md).
 
-### E. Setup OpenAuto-Pro
+## Setup OpenAuto-Pro
 * Disable `Wireless Android Auto` under `Settings --> Android Auto --> System`:
  <img src="images/aa-wireless-disabled.jpg" alt="Settings: Disabled AA Wireless" width="600">
 
@@ -84,26 +74,26 @@ Instructions: [kernel/modules/raw-gadget/dummy_hcd/README.md](https://github.com
 
 **Important**: Don't change these settings again, because they will override our modifications below.
 
-### F. Install all files inside `aa-proxy-oap`
+## Install all files inside `aa-proxy-oap`
 
 * The file structure of the `aa-proxy-oap` subfolder is following the structure of another project of mine, [navipi-usb-update](https://github.com/KreAch3R/navipi-usb-update).  
 Basically, it's a copy-paste mechanism so the folders correspond to the **Host** system root folders and subfolders. It's not necessary to use this mechanism to install the files. 
 
-#### a. Bluetooth
+### 1. Bluetooth
 
 * `aa-proxy-rs` is handling the Bluetooth connection. 
 * The `main.conf` file is needed.
 * You can edit the BLE device name [here](https://github.com/KreAch3R/aa-proxy-oap/blob/6bf6b8f2b33cf9f97e480fea18d424b288a35f68/aa-proxy-oap/usr/local/bin/aa-proxy/aa-proxy-rs.sh#L11).
 * Use Host's `Bluetooth Manager` to delete your phone and re-create a new pair from scratch. 
 
-#### b. Wi-Fi Hotspot / hostapd / dhcpcd / dnsmasq
+### 2. Wi-Fi Hotspot / hostapd / dhcpcd / dnsmasq
 
 * AA wireless requires a working Wi-Fi Hotspot setup by the **Host** system, and then `aa-proxy-rs` conveys the `ssid` and `password` to the phone through the established Bluetooth connection. 
 * `hostapd` and `dhcpcd` modifications are required for this. In constract to `WirelessAndroidAutoDongle` modifications, we need to use `dhcpcd`. 
 * Important: `OpenAuto-Pro` provides a `hotspot` toggle that modifies the same files. Make sure to enable it first, then edit the files. That makes sure that there aren't any conficts. 
 * You can edit the `ssid` and `password` of the hotspot [here](aa-proxy-oap/etc/hostapd/hostapd.conf#L16), while the IP address [here](aa-proxy-oap/etc/dhcpcd.conf#L62) and range [here](aa-proxy-oap/etc/dnsmasq.conf#L2).
 
-#### c. Systemd
+### 3. Systemd
 
 * In constract to `WirelessAndroidAutoDongle` modifications, we can't use `/etc/init.d`. At least, I didn't find out how. 
 * I translated the necessary startup scripts to `systemd` services, so that the `usb-gadget` can be setup after boot and `aa-proxy-rs` can be run.
@@ -113,9 +103,9 @@ Basically, it's a copy-paste mechanism so the folders correspond to the **Host**
 * It contains the script used by `systemd` as well as a statically built `aa-proxy-rs` working binary. 
 * If you want to build it on your own, check [here](https://github.com/KreAch3R/aa-proxy-rs?tab=readme-ov-file#dependencies).
 
-# 3. Result:
+# Result:
 
-If everything runs correctly, after booting, the **Host** should launch OpenAuto-Pro as usual, then immediately connect to your phone, the phone should connect to the **Host**'s Wi-Fi hotspot, and then launch the AA Wireless sequence. 
+If everything runs correctly, after booting, the **Host** should launch OpenAuto-Pro as usual, then immediately connect to your phone, the phone should connect to the **Host**'s Wi-Fi hotspot, and then launch the AA Wireless sequence.
 
 Log (from `/var/log/aa-proxy-rs.log`):
 ```
