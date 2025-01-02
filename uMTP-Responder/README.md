@@ -1,9 +1,13 @@
+# uMTP-Responder
+
+Necessary program for `usb-gadget` to work.
+
 1. Git clone:
 ```
 https://github.com/viveris/uMTP-Responder
 ```
 
-2. Build with `make` on target
+2. Build with `make` on **Host** system.
 
 3. Install with:
 ```
