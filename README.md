@@ -45,9 +45,11 @@ Then, another awesome project based on `WirelessAndroidAutoDongle` came to the r
 
 So, to sum up, we need to:
 
-1. Re-build the kernel for our OpenAuto-Pro image, include all the necessary modifications for `usb-gadget` and `dummy_hcd` to work, and install it. 
-2. Build `aa-proxy-rs` statically or use the pre-built binary of this repo.
-3. Install the `Bluetooth`, `hostapd`, `dnsmasq` and all the other changes to our **Host** system.
+1. Re-build the kernel for our OpenAuto-Pro image, include all the necessary modifications for `usb-gadget` and `dummy_hcd` to work.
+2. Build `dummy_hcd.ko` or use the pre-built binary
+3. Build `uMTP-Responder` or use the pre-built binary
+4. Build `aa-proxy-rs` statically or use the pre-built binary
+5. Install the `kernel`, `dummy_hcd` module, `uMTP-Responder` and the `bluetooth`, `hostapd`, `dhcpcd`, `dnsmasq` to our **Host** system, alongside the `aa-proxy` folder in `/usr/local/bin` and `systemd` services.
 
 
 
