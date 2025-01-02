@@ -74,7 +74,17 @@ Instructions: [kernel/modules/raw-gadget/dummy_hcd/README.md](https://github.com
 * This is needed for the `usb-gadget` service to work.  
 * Instructions: [uMTP-Responder/README.md](https://github.com/KreAch3R/aa-proxy-oap/blob/main/uMTP-Responder/README.md).
 
-### E. Install all files inside `aa-proxy-oap`
+### E. Setup OpenAuto-Pro
+* Disable `Wireless Android Auto` under `Settings --> Android Auto --> System`:
+ <img src="images/aa-wireless-disabled.jpg" alt="Settings: Disabled AA Wireless" width="600">
+
+
+* Enable `Hotspot` at either `2.4Ghz` or `5Ghz` (it doesn't matter, we set it manually) under `Settings --> Wireless`:
+ <img src="images/hotspot-enabled.jpg" alt="Settings: enable hotspot" width="600">
+
+**Important**: Don't change these settings again, because they will override our modifications below.
+
+### F. Install all files inside `aa-proxy-oap`
 
 * The file structure of the `aa-proxy-oap` subfolder is following the structure of another project of mine, [navipi-usb-update](https://github.com/KreAch3R/navipi-usb-update).  
 Basically, it's a copy-paste mechanism so the folders correspond to the **Host** system root folders and subfolders. It's not necessary to use this mechanism to install the files. 
@@ -84,13 +94,14 @@ Basically, it's a copy-paste mechanism so the folders correspond to the **Host**
 * `aa-proxy-rs` is handling the Bluetooth connection. 
 * The `main.conf` file is needed.
 * You can edit the BLE device name [here](https://github.com/KreAch3R/aa-proxy-oap/blob/6bf6b8f2b33cf9f97e480fea18d424b288a35f68/aa-proxy-oap/usr/local/bin/aa-proxy/aa-proxy-rs.sh#L11).
+* Use Host's `Bluetooth Manager` to delete your phone and re-create a new pair from scratch. 
 
 #### b. Wi-Fi Hotspot / hostapd / dhcpcd / dnsmasq
 
 * AA wireless requires a working Wi-Fi Hotspot setup by the **Host** system, and then `aa-proxy-rs` conveys the `ssid` and `password` to the phone through the established Bluetooth connection. 
 * `hostapd` and `dhcpcd` modifications are required for this. In constract to `WirelessAndroidAutoDongle` modifications, we need to use `dhcpcd`. 
 * Important: `OpenAuto-Pro` provides a `hotspot` toggle that modifies the same files. Make sure to enable it first, then edit the files. That makes sure that there aren't any conficts. 
-* You can edit the `ssid` and `password` of the hotspot [here](https://github.com/KreAch3R/aa-proxy-oap/blob/6bf6b8f2b33cf9f97e480fea18d424b288a35f68/aa-proxy-oap/etc/hostapd/hostapd.conf#L16), while the IP address [here](https://github.com/KreAch3R/aa-proxy-oap/blob/6bf6b8f2b33cf9f97e480fea18d424b288a35f68/aa-proxy-oap/etc/dhcpcd.conf#L62) and range [here](https://github.com/KreAch3R/aa-proxy-oap/blob/6bf6b8f2b33cf9f97e480fea18d424b288a35f68/aa-proxy-oap/etc/dnsmasq.conf#L2).
+* You can edit the `ssid` and `password` of the hotspot [here](aa-proxy-oap/etc/hostapd/hostapd.conf#L16), while the IP address [here](aa-proxy-oap/etc/dhcpcd.conf#L62) and range [here](aa-proxy-oap/etc/dnsmasq.conf#L2).
 
 #### c. Systemd
 
