@@ -16,13 +16,13 @@ sudo cat /proc/config.gz | gunzip > running.config
 
 Then grep the `running.config` for the above configs:
 ```
-cat running.config | grep -e CONFIG_CONFIGFS_FS= 
-                         -e CONFIG_USB= 
-                         -e CONFIG_USB_GADGET= 
-                         -e CONFIG_USB_DUMMY_HCD= 
-                         -e CONFIG_USB_CONFIGFS= 
-                         -e CONFIG_USB_CONFIGFS_F_FS= 
-                         -e CONFIG_USB_CONFIGFS_UEVENT= 
+cat running.config | grep -e CONFIG_CONFIGFS_FS= \
+                         -e CONFIG_USB= \
+                         -e CONFIG_USB_GADGET= \
+                         -e CONFIG_USB_DUMMY_HCD= \
+                         -e CONFIG_USB_CONFIGFS= \
+                         -e CONFIG_USB_CONFIGFS_F_FS= \
+                         -e CONFIG_USB_CONFIGFS_UEVENT= \
                          -e CONFIG_USB_CONFIGFS_F_ACC=
 ```
 
