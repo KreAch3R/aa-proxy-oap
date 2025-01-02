@@ -5,12 +5,12 @@ Description=OAP AA Wireless Proxy - USB GADGET Service
 Type=oneshot
 User=root
 Group=root
-ExecStartPre=-!/bin/sh -c '/bin/rm -r /home/pi/Logs/aa-usbgadget.*'
+# ExecStartPre=-!/bin/sh -c '/bin/rm -r /home/pi/Logs/aa-usbgadget.*'
 ExecStart=/usr/local/bin/aa-proxy/aa-usbgadget.sh start
 ExecStop=/usr/local/bin/aa-proxy/aa-usbgadget.sh stop
 ExecReload=/usr/local/bin/aa-proxy/aa-usbgadget.sh restart
-StandardOutput=file:/home/pi/Logs/aa-usbgadget.log
-StandardError=file:/home/pi/Logs/aa-usbgadget.error
+# StandardOutput=file:/home/pi/Logs/aa-usbgadget.log
+# StandardError=file:/home/pi/Logs/aa-usbgadget.error
 
 [Install]
 WantedBy=multi-user.target
