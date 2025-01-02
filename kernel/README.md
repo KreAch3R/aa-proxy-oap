@@ -1,6 +1,9 @@
 # Build 5.10.y kernel for RPI 4B 
 
-32bit armhf Raspbian Buster image
+32bit armhf Raspbian Buster image.
+
+Stock OpenAuto-Pro kernel: 5.10.103  
+Target kernel: 5.10.110
 
 ## 1. Check current kernel
 
@@ -82,7 +85,7 @@ CONFIG_LOCALVERSION="-v7l-MY_CUSTOM_KERNEL"
 ```
 Don't leave duplicate lines about the same config. 
 
-and whatever else is missing. Then: 
+Then: 
 
 ```
 # Run the following command to build a 32-bit kernel:
@@ -91,7 +94,7 @@ make -j6 zImage modules dtbs
 # install modules
 sudo make -j6 modules_install
 
-# For the commands below, the original guide is providing WRONG paths. These are the correct ones
+# For the commands below, the original guide wrongly uses the updated new/64bit paths for older 32bit kernels. Use the paths below:
 # Install kernel 
 sudo cp /boot/$KERNEL.img /boot/$KERNEL-backup.img
 sudo cp arch/arm/boot/zImage /boot/$KERNEL.img
@@ -107,9 +110,9 @@ sudo cp arch/arm/boot/dts/overlays/README /boot/overlays/
 sudo reboot
 ```
 
-## 3. Check Result
+## 3. Result
 
-If everything went as planned, running again the command to check configs should produce something like this: 
+If everything went as planned, remove `running.config` and **recreate** it again. Now, it should contain something like this: 
 
 ```
 CONFIG_USB=y
@@ -121,6 +124,6 @@ CONFIG_USB_CONFIGFS_F_ACC=y
 CONFIG_CONFIGFS_FS=y
 ```
 
-Notice that `CONFIG_USB_DUMMY_HCD` doesn't exist. It is because it is installed manually at `/lib/modules/$(uname -r)/kernel/drivers/` as [per instructions](https://github.com/KreAch3R/aa-proxy-oap/blob/16f4c7f9a2fe108d42cd9adb5f29aae58695281d/kernel/modules/README.md) after booting into the new freshly compiled kernel. 
+Notice that `CONFIG_USB_DUMMY_HCD` doesn't exist. It is because it is installed manually at `/lib/modules/$(uname -r)/kernel/drivers/` as [per instructions](modules/raw-gadget/dummy_hcd/README.md) after booting into the new freshly compiled kernel. 
 
-For the above output, I should only need to load `libcomposite` and `dummy_hcd` in `/etc/modules`.
+For the above output, we should only need to load `libcomposite` and `dummy_hcd` in `/etc/modules`.
