@@ -14,4 +14,4 @@ https://github.com/viveris/uMTP-Responder
 sudo cp umtprd /usr/sbin/
 ```
 
-You can also use the prebuilt binary from the repo. 
+You can also use the prebuilt binary from the repo.
