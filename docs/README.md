@@ -2,7 +2,6 @@
 
 **Terms** used:
 ```
-Host/Headunit:              RPI 4B running OpenAuto-Pro
 Device/USB Gadget:          RPI 4B running an emulated OTG/USB Gadget device and using dummy_hcd to become a device to itself
 aawg/aa-proxy-rs:           The program providing the wired to wireless AA proxy
 ```

@@ -3,6 +3,8 @@ An "aa-proxy-rs", (a Rust implementation of AA Wireless Dongle) USB Gadget Integ
 
 ### **Update your OpenAuto Pro installation with Android Auto Wireless compatible with Android App version > 12.6+ (currently working on 13.3+)!**
 
+---
+
 I managed to find a workaround that implements an emulated usb dongle device inside the same Raspberry Pi that runs OpenAuto-Pro, so the phone is connected wirelessly, but OpenAuto *thinks* it's connected by USB. 
 
  <img src="images/aa-wireless-connected.jpg" alt="AA Wireless Connected">
@@ -21,6 +23,11 @@ This took weeks and needed configurations across the whole Host/Headunit raspbia
 
 
 # Installation
+
+**Terms** used:
+```
+Host/Headunit:              RPI 4B running OpenAuto-Pro
+```
 
 ## 1. Setup OpenAuto-Pro
 * Disable `Wireless Android Auto` under `Settings --> Android Auto --> System`:
@@ -56,14 +63,18 @@ sudo systemctl enable aa-proxy.service
 sudo systemctl enable aa-usbgadget.service
 ```
 
-After that, **reboot** your Raspberry pi. 
+After that, **reboot** your **Host**.
 
-## 3. DIY / Build from source
+## 2. DIY / Build from source
 
 Follow the [docs](docs/README.md).
 
 
 # Result:
+
+After the first reboot, remove any Bluetooth connections to your phone and reconnect using `Bluetooth Manager`. The default Bluetooth name and the default Wi-Fi SSID is `NaviPi`.
+
+Then do another reboot.
 
 If everything runs correctly, after booting, the **Host** should launch OpenAuto-Pro as usual, then immediately connect to your phone, the phone should connect to the **Host**'s Wi-Fi hotspot, and then launch the AA Wireless sequence.
 
