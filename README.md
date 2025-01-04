@@ -1,26 +1,24 @@
 # aa-proxy-oap
 An "aa-proxy-rs", (a Rust implementation of AA Wireless Dongle) USB Gadget Integration for OpenAuto Pro.
 
-**Update your OpenAuto Pro installation with Android Auto Wireless compatible with Android App version > 12.6+ (currently working on 13.3+)!**
+### **Update your OpenAuto Pro installation with Android Auto Wireless compatible with Android App version > 12.6+ (currently working on 13.3+)!**
 
 I managed to find a workaround that implements an emulated usb dongle device inside the same Raspberry Pi that runs OpenAuto-Pro, so the phone is connected wirelessly, but OpenAuto *thinks* it's connected by USB. 
 
+ <img src="images/aa-wireless-connected.jpg" alt="AA Wireless Connected">
 
- <img src="images/aa-wireless-connected.jpg" alt="AA Wireless Connected" width="600">
+ <img src="images/version-info.jpg" alt="Version Info">
 
- <img src="images/openauto-pro-16.jpg" alt="OpenAuto-Pro 16" width="500">
-
-<img src="images/aa-wireless-running.jpg" alt="AA app wireless" width="302">
-<img src="images/aa-version-13.jpg" alt="AA app version" width="250">
 
 
 <a href="https://www.paypal.com/donate/?business=R9V8AAFPNV684&no_recurring=0&currency_code=EUR">
 <img src="https://raw.githubusercontent.com/stefan-niedermann/paypal-donate-button/master/paypal-donate-button.png" alt="Donate with PayPal" width="300">
 </a>
 
-## **NOTICE: This is a WORK IN PROGRESS.**
+### **NOTICE: This is a WORK IN PROGRESS.**
 
-This took weeks and needed configurations across the whole Host/Headunit raspbian buster image, so I will try to document everything. I will come back and add/fix things for a while. 
+This took weeks and needed configurations across the whole Host/Headunit raspbian buster image, so I will try to document everything. I will come back and add/fix things for a while.  
+
 
 # Installation
 
@@ -38,13 +36,13 @@ This took weeks and needed configurations across the whole Host/Headunit raspbia
 
 The prebuilt kernel is based on `5.10.110` for Raspberry Pi 4B `bcm2711`, `armhf` 32bit **only**.
 
+#### CAUTION: THIS WILL REPLACE YOUR KERNEL, YOUR BLUETOOTH AND YOUR WI-FI/INTERNET CONFIGURATION. BACKUP YOUR SDCARD. PROCEED AT YOUR OWN RISK.
+
 Download the repository:
 ```
 git clone https://github.com/KreAch3R/aa-proxy-oap
 ```
 And install all necessary files.  
-
-### CAUTION: THIS WILL REPLACE YOUR KERNEL, YOUR BLUETOOTH AND YOUR WI-FI/INTERNET CONFIGURATION. BACKUP YOUR SDCARD.
 
 ```
 cd aa-proxy-oap/aa-proxy-oap
