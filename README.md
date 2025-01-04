@@ -46,7 +46,14 @@ And install all necessary files.
 
 ```
 cd aa-proxy-oap/aa-proxy-oap
-sudo cp -p -r * /
+sudo cp -r * /
+```
+
+Lastly, enable the services:
+
+```
+sudo systemctl enable aa-proxy.service
+sudo systemctl enable aa-usbgadget.service
 ```
 
 After that, **reboot** your Raspberry pi. 
