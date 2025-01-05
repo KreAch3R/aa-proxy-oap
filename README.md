@@ -41,7 +41,7 @@ Host/Headunit:              RPI 4B running OpenAuto-Pro
 
 ## 2. Easiest method / Prebuilt binaries
 
-The prebuilt kernel is based on `5.10.110` for Raspberry Pi 4B `bcm2711`, `armhf` 32bit **only**.
+The prebuilt kernels are based on `5.10.110` for Raspberry Pi 3 `bcm2709` and Raspberry Pi 4 `bcm2711`, `armhf` 32bit **only**.
 
 #### CAUTION: THIS WILL REPLACE YOUR KERNEL, YOUR BLUETOOTH AND YOUR WI-FI/INTERNET CONFIGURATION. BACKUP YOUR SDCARD. PROCEED AT YOUR OWN RISK.
 
@@ -53,8 +53,17 @@ And install all necessary files.
 
 ```
 cd aa-proxy-oap/aa-proxy-oap
-sudo cp -r * /
+sudo cp -r common/* /
 ```
+For Rapsberry Pi 3 board:
+```
+sudo cp -r board/bcm2709/* /
+```
+For Rapsberry Pi 4 board:
+```
+sudo cp -r board/bcm2711/* /
+```
+
 
 Lastly, enable the services:
 
