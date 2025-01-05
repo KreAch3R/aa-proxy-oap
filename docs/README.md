@@ -2,7 +2,7 @@
 
 **Terms** used:
 ```
-Device/USB Gadget:          RPI 4B running an emulated OTG/USB Gadget device and using dummy_hcd to become a device to itself
+Device/USB Gadget:          RPI 3/4 running an emulated OTG/USB Gadget device and using dummy_hcd to become a device to itself
 aawg/aa-proxy-rs:           The program providing the wired to wireless AA proxy
 ```
 

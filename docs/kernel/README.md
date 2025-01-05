@@ -1,4 +1,4 @@
-# Build 5.10.y kernel for RPI 4B 
+# Build 5.10.y kernel for RPI 4 or RPI 3
 
 32bit armhf Raspbian Buster image.
 
@@ -51,19 +51,30 @@ Given that you haven't modified your kernel, at least two of the above **require
 
 Used these instructions: https://www.raspberrypi.com/documentation/computers/linux_kernel.html
 
-These **must** be done on target, i.e. on the **Host** system, RPI-4B, in order to build *natively*. 
+These **must** be done on target, i.e. on the **Host** system, RPI-4 or RPI-3, in order to build *natively*. 
 
 ```
 sudo apt install bc bison flex libssl-dev make
 git clone --branch rpi-5.10.y https://github.com/raspberrypi/linux
 ```
-Then, you need to apply the necessary patch for the `accessory` function. In constrast to `AAWirelessDongle`, we don't need the `0002-Remove-cyclic-dependency-between-f_accessory-and-lib.patch`.  
-The patch should be able to be applied on top of the `rpi-5.10.y` kernel source, by running:
+
+Apply the necessary patches for the `accessory` function, according to your board. The patch(es) should be able to be applied on top of the `rpi-5.10.y` kernel source.
+
+For the Raspberry Pi 4 `bcm2711`, only one is needed:
 ```
 git am < 0001-Backport-and-apply-patches-for-Android-Accessory-mod.patch
 ```
 
-After applying, continue with building:
+While for the Raspberry Pi 3 `bcm2709`, both are needed:
+
+```
+git am < 0001-Backport-and-apply-patches-for-Android-Accessory-mod.patch
+git am < 0002-Remove-cyclic-dependency-between-f_accessory-and-lib.patch
+```
+
+After applying, continue with building the correct board. 
+
+For the Raspberry Pi 4 `bcm2711`:
 
 ```
 cd linux
@@ -71,10 +82,18 @@ KERNEL=kernel7l
 make bcm2711_defconfig
 ```
 
+While for the Raspberry Pi 3 `bcm2709`:
+
+```
+cd linux
+KERNEL=kernel7
+make bcm2709_defconfig
+```
+
 Now we edit the `.config` file and add our modifications. At least:
 ```
 # change the following line in .config:
-CONFIG_LOCALVERSION="-v7l-MY_CUSTOM_KERNEL"
+CONFIG_LOCALVERSION="-MY_CUSTOM_KERNEL"
 
 # replace lines as necessary (search the file, remove "is not set")
 CONFIG_USB_DUMMY_HCD=y
@@ -85,7 +104,7 @@ CONFIG_USB_CONFIGFS_F_ACC=y
 ```
 Don't leave duplicate lines about the same config.
 
-You can also use the pre-created [bcm2711_defconfig](kernel/defconfig/bcm2711_defconfig).
+You can also use the pre-created [bcm2711_defconfig](kernel/defconfig/bcm2711_defconfig) or [bcm2709_defconfig](kernel/defconfig/bcm2709_defconfig).
 
 Then:
 
