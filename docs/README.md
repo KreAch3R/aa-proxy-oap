@@ -40,13 +40,13 @@ So, to sum up, we need to:
 
 ## Build and install the kernel
 
-Instructions: [kernel/README.md](docs/kernel/README.md).
+Instructions: [kernel/README.md](kernel/README.md).
 
 
 ## Build and install `uMTP-Responder`
 
 * This is needed for the `usb-gadget` service to work.  
-* Instructions: [uMTP-Responder/README.md](docs/uMTP-Responder/README.md).
+* Instructions: [uMTP-Responder/README.md](uMTP-Responder/README.md).
 
 ## Install all files inside `aa-proxy-oap`
 
@@ -57,7 +57,7 @@ Basically, it's a copy-paste mechanism so the folders correspond to the **Host**
 
 * `aa-proxy-rs` is handling the Bluetooth connection. 
 * The `main.conf` file is needed.
-* You can edit the BLE device name [here](aa-proxy-oap/blob/main/aa-proxy-oap/usr/local/bin/aa-proxy/aa-proxy-rs.sh#L11).
+* You can edit the BLE device name [here](../aa-proxy-oap/usr/local/bin/aa-proxy/aa-proxy-rs.sh#L11).
 * Use Host's `Bluetooth Manager` to delete your phone and re-create a new pair from scratch. 
 
 ### 2. Wi-Fi Hotspot / hostapd / dhcpcd / dnsmasq
@@ -65,7 +65,7 @@ Basically, it's a copy-paste mechanism so the folders correspond to the **Host**
 * AA wireless requires a working Wi-Fi Hotspot setup by the **Host** system, and then `aa-proxy-rs` conveys the `ssid` and `password` to the phone through the established Bluetooth connection. 
 * `hostapd` and `dhcpcd` modifications are required for this. In constract to `WirelessAndroidAutoDongle` modifications, we need to use `dhcpcd`. 
 * Important: `OpenAuto-Pro` provides a `hotspot` toggle that modifies the same files. Make sure to enable it first, then edit the files. That makes sure that there aren't any conficts. 
-* You can edit the `ssid` and `password` of the hotspot [here](aa-proxy-oap/etc/hostapd/hostapd.conf#L16), while the IP address [here](aa-proxy-oap/etc/dhcpcd.conf#L62) and range [here](aa-proxy-oap/etc/dnsmasq.conf#L2).
+* You can edit the `ssid` and `password` of the hotspot [here](../aa-proxy-oap/etc/hostapd/hostapd.conf#L16), while the IP address [here](../aa-proxy-oap/etc/dhcpcd.conf#L62) and range [here](../aa-proxy-oap/etc/dnsmasq.conf#L2).
 
 ### 3. Systemd
 
