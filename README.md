@@ -26,7 +26,7 @@ This took weeks and needed configurations across the whole Host/Headunit raspbia
 
 **Terms** used:
 ```
-Host/Headunit:              RPI 3/4 running OpenAuto-Pro
+Host/Headunit:              RPI 4B running OpenAuto-Pro
 ```
 
 ## 1. Setup OpenAuto-Pro
